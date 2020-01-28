@@ -1,78 +1,40 @@
-import React, { Component } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
+import React, { Component } from 'react';
+import {Platform, StyleSheet, View, Text} from 'react-native';
+import TabScreen from './src/screens/TabScreen'
+import { AppLoading } from "expo";
+import * as Font from 'expo-font'
 
-export default class App extends Component {
-  
-constructor(props){
-  super(props);
-  this.state={
-    isLoading: true,
-    dataSource: null
+export default class App extends Component{
+  constructor(props) {
+    super(props);
+    this.state = { loading: true };
   }
-}
 
-componentDidMount(){
-   
-  return fetch('http://dummy.restapiexample.com/api/v1/employees')
-         .then(response => response.json())
-         .then(responseJson =>{
-           this.setState({
-             isLoading:false,
-             dataSource: responseJson.data
-           })
-         })
-         .catch(error=>{
-           console.log(error)
-         })
+  async componentDidMount () {
+    await Font.loadAsync({
+      Roboto: require("native-base/Fonts/Roboto.ttf"),
+      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
+      FontAwesome : require("native-base/Fonts/FontAwesome.ttf")
+
+    });
+    this.setState({ loading: false });
+  }
   
-}
-
-  render() {
-  
-    if(this.state.isLoading){
+  render(){
+    if (this.state.loading) {
       return (
-        <View style={styles.container}>
-        <ActivityIndicator/>
-        </View>
-      )
-    }
-    else{
-
-      let m = this.state.dataSource.map((item)=>{
-        return(<View key={item.id}>
-          <Text style={{fontSize:24}}>
-          {item.employee_name} and my Id is :
-          {item.id}
-          </Text>
-          
-          </View>)
-      })
-     
-      
-      return (
-        <View style={styles.container}>
-          {m}
-        </View>
+          <AppLoading/>
       );
     }
-
-   
+    return(
+      <TabScreen/>
+    )
   }
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
-  }, 
-  item:{
-    flex:1,
-    alignSelf:'stretch',
-    margin:8,
-    alignItems:'center',
-    justifyContent:'center',
-    borderBottomWidth:1,
-    borderBottomColor:'#eee'
+const styles= StyleSheet.create({
+  container:{
+    margin: 20,
+
   }
-});
+  
+})
